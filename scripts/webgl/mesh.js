@@ -118,7 +118,7 @@
             uniformSetter.set({
               model:this.worldMatrix??this.matrix(),
               jointTexture: this.skin.jointTexture,
-              numJoints: 2.0,
+              numJoints: this.skin.joints.length,
             })
           
           if(this.geometry.indices){
