@@ -125,11 +125,11 @@
 
 
     const camera=node('createCamera')(gl)
-    camera.source.translation[2] = -6
+    camera.source.translation[2] = -2000
 
     engine.camera=camera
 
-
+      var delta
 
       function render(gl, uniforms, frameTime, shader){
 
@@ -138,6 +138,8 @@
           if(model.animate){
             model.animate(frameTime)
           }
+
+          //animSkin(gltf, gltf.skins[0], delta);
   
           if(!model.render){
               console.log('model without render()...', model)
@@ -159,6 +161,7 @@
 
 
        const frameTime = (time-time_old)*0.001;
+       delta = frameTime
        frame++;
 
 
@@ -181,8 +184,12 @@
 
         for (const scene of engine.models) {
           scene.updateWorldMatrix();
-          if(scene.skins){
-            scene.animSkin(delta);
+          if(gltf.skins){
+            //scene.animSkin(delta);
+            animSkin(gltf, gltf.skins[0], delta);
+            if(scene.skin&&scene.skin.update){
+              scene.skin.update(scene)
+            }
           }
         }
 
@@ -191,10 +198,10 @@
       //}
 
 
-        for(const buffer of engine.buffers){
+        /*for(const buffer of engine.buffers){
             node('clearSceneAndSetBuffer')(gl,buffer)
             render(gl, uniforms, frameTime, buffer.shader)
-        }
+        }*/
 
         node('clearSceneAndSetBuffer')(gl)
         render(gl, uniforms, frameTime)//, buffer2.shader)
@@ -202,9 +209,9 @@
 
         //render2d.uniforms.colorTexture=buffer.color//colorTexture
         //print.render(gl,uniforms)
-        for(const render of engine.renderers){
+        /*for(const render of engine.renderers){
             render.render(gl,uniforms)
-        }
+        }*/
 
 
 

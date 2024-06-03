@@ -10,10 +10,10 @@
 
         //node('TriangulationScene')()
 
-        node('CubesScene')(engine)
+        //node('CubesScene')(engine)
 
 
-        //node('GLTFScene')(engine)
+        node('GLTFScene')(engine)
 
 
 

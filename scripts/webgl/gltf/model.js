@@ -1,3 +1,5 @@
+    var gltf
+    
     {
         
         function glTypedArray(val){
@@ -53,7 +55,7 @@
             
             let path=uri.replace(uri.split('/').pop(),'')
         
-            const gltf=await node('load')(uri,"json")
+            gltf=await node('load')(uri,"json")
         
             //console.log(gltf)
         
@@ -62,6 +64,14 @@
                 gltf.buffers[key]=await node('load')(url,'arrayBuffer')
             }
         
+            gltf['data']=gltf['accessors'].map(accessor=>{
+              const bufferView=gltf['bufferViews'][accessor['bufferView']]
+              const TypedArray = glTypedArray(accessor['componentType'])
+              return new TypedArray(
+                  gltf.buffers[bufferView['buffer']],
+                  bufferView['byteOffset'],//+ (accessor.byteOffset || 0),
+                  accessor['count']* NumSize(accessor['type']))
+          })
             
         
             gltf.accessors=gltf.accessors.map((accessor,index)=>{
@@ -123,7 +133,7 @@
             gltf.skins = (gltf.skins??[]).map((skin) => {
               const joints = skin.joints.map(ndx => gltf.nodes[ndx]);
               const array = gltf.accessors[skin.inverseBindMatrices]
-              return node('Skin')(gl,joints, array);
+              return node('Skin').bind(skin)(gl,joints, array);
             });
         
             for (const {node:nodeScene, mesh, skinNdx} of skinnodes) {

@@ -28,22 +28,21 @@
               gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
             
             
-            return {
-                update(node) {
+              this.update=function(node){
                 const globalWorldInverse = mat4.create()
                 mat4.invert(globalWorldInverse,node.worldMatrix);
             
                 for (let j = 0; j < this.joints.length; ++j) {
                     const joint = this.joints[j];
                     const dst = this.jointMatrices[j];
-                    mat4.multiply(dst, globalWorldInverse, joint.worldMatrix);
+                    mat4.multiply(dst, globalWorldInverse, node.worldMatrix);
                     mat4.multiply(dst, dst, this.inverseBindMatrices[j]);
                 }
                 gl.bindTexture(gl.TEXTURE_2D, this.jointTexture);
                 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, 4, this.joints.length, 0,
                                 gl.RGBA, gl.FLOAT, this.jointData);
                 }
-            }
+            return this
         })
 
 
